@@ -6,9 +6,9 @@ import type { CartItem } from "@/types/product"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { Input } from "@/components/ui/input"
-import { Minus, Plus, ShoppingCart, X, ChevronDown, ChevronUp } from "lucide-react"
+import { Minus, Plus, ShoppingCart, X } from "lucide-react"
 import { Separator } from "@/components/ui/separator"
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+import { Collapsible } from "@/components/ui/collapsible"
 import { CURRENCY, TAX_RATE, ORDER_STEPS, THEME } from "@/constants/config"
 import { useSwipeable } from 'react-swipeable';
 
@@ -55,6 +55,8 @@ export function CartSheet({ cart, onUpdateQuantity, onRemoveItem, open, onOpenCh
     },
     onSwipedRight: () => setSwipedIndex(null),
     trackMouse: true,
+    // increased delta for more responsive swipe
+    delta: 5,
     preventDefaultTouchmoveEvent: true
   });
 
@@ -91,78 +93,77 @@ export function CartSheet({ cart, onUpdateQuantity, onRemoveItem, open, onOpenCh
           <div className="flex-1 overflow-auto">
             <AnimatePresence>
               {cart.map((item, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, x: -100 }}
-                  className="relative select-none"
-                  style={{ borderColor: THEME.primary }}
-                  data-index={index}
-                  {...swipeHandlers}
-                >
-                  <div className={`p-6 border-b ${swipedIndex === index ? 'translate-x-[-80px]' : ''} transition-transform duration-200`} style={{ borderColor: THEME.primary }}>
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-start justify-between">
-                          <h3 className="font-semibold text-lg" style={{ color: THEME.text }}>
-                            {item.name}
-                          </h3>
-                        </div>
-                        <p className="text-sm text-muted-foreground mt-1" style={{ color: THEME.text }}>
-                          {item.customizations?.size}, {item.customizations?.sugar}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between mt-4">
-                      <div className="flex items-center gap-3 bg-secondary/50 rounded-lg p-1">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8"
-                          onClick={() => handleQuantityChange(index, item.quantity - 1)}
-                          disabled={item.quantity <= 1}
-                        >
-                          <Minus className="h-4 w-4" />
-                        </Button>
-                        <Input
-                          type="number"
-                          className="w-16 text-center"
-                          style={{ color: THEME.text }}
-                          value={item.quantity.toString()}
-                          onChange={(e) => {
-                            const value = parseInt(e.target.value);
-                            if (!isNaN(value)) {
-                              handleQuantityChange(index, value);
-                            }
-                          }}
-                        />
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8"
-                          onClick={() => handleQuantityChange(index, item.quantity + 1)}
-                        >
-                          <Plus className="h-4 w-4" />
-                        </Button>
-                      </div>
-                      <p className="font-semibold text-lg" style={{ color: THEME.primary }}>
-                        {CURRENCY.symbol}
-                        {(item.price * item.quantity).toFixed(2)}
-                      </p>
-                    </div>
-                  </div>
-                  {swipedIndex === index && (
+              <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, x: -100 }}
+              className="relative select-none"
+              style={{ borderColor: THEME.primary }}
+              data-index={index}
+              {...swipeHandlers}
+            >
+              <div 
+                className={`p-4 border-b ${swipedIndex === index ? 'translate-x-[-80px]' : ''} transition-transform duration-200 flex items-center justify-between`} 
+                style={{ borderColor: THEME.primary }}
+              >
+                <div className="flex-1 min-w-0 mr-4">
+                  <h3 className="font-semibold text-lg truncate" style={{ color: THEME.text }}>
+                    {item.name}
+                  </h3>
+                  <p className="text-sm text-muted-foreground mt-1 truncate" style={{ color: THEME.text }}>
+                    {item.customizations?.size}, {item.customizations?.sugar}
+                  </p>
+                </div>
+                <div className="flex flex-col items-end gap-2">
+                  <p className="font-semibold text-lg" style={{ color: THEME.primary }}>
+                    {CURRENCY.symbol}
+                    {(item.price * item.quantity).toFixed(2)}
+                  </p>
+                  <div className="flex items-center gap-1">
                     <Button
-                      variant="destructive"
+                      variant="ghost"
                       size="icon"
-                      className="absolute top-1/2 right-2 -translate-y-1/2 h-12 w-12"
-                      onClick={() => handleRemove(index)}
+                      className="h-7 w-7"
+                      onClick={() => handleQuantityChange(index, item.quantity - 1)}
+                      disabled={item.quantity <= 1}
                     >
-                      <X className="h-6 w-6" />
+                      <Minus className="h-3 w-3" />
                     </Button>
-                  )}
-                </motion.div>
+                    <Input
+                      type="number"
+                      className="w-12 text-center h-7 px-1"
+                      style={{ color: THEME.text }}
+                      value={item.quantity.toString()}
+                      onChange={(e) => {
+                        const value = parseInt(e.target.value);
+                        if (!isNaN(value)) {
+                          handleQuantityChange(index, value);
+                        }
+                      }}
+                    />
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-7 w-7"
+                      onClick={() => handleQuantityChange(index, item.quantity + 1)}
+                    >
+                      <Plus className="h-3 w-3" />
+                    </Button>
+                  </div>
+                </div>
+              </div>
+              {swipedIndex === index && (
+                <Button
+                  variant="destructive"
+                  size="icon"
+                  className="absolute top-1/2 right-2 -translate-y-1/2 h-12 w-12"
+                  onClick={() => handleRemove(index)}
+                >
+                  <X className="h-6 w-6" />
+                </Button>
+              )}
+            </motion.div>
               ))}
             </AnimatePresence>
           </div>
