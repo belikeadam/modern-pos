@@ -7,6 +7,8 @@ import { CategoryBar } from "@/components/category-bar"
 import { SubcategoryNav } from "@/components/subcategory-nav"
 import type { Category, CartItem, Product, ProductCustomizations } from "@/types/product"
 import { Button } from "@/components/ui/button"
+import { useIsMobile } from "@/hooks/use-mobile"
+
 import {
   ShoppingCart,
   Coffee,
@@ -128,11 +130,11 @@ const CATEGORIES: Category[] = [
 
 const PRODUCTS: Product[] = [
   {
-    id: "1",  
+    id: "1",
     name: "French Vanilla Fantasy",
     price: 5.99,
     icon: Coffee,
-    categoryId: "drinks", 
+    categoryId: "drinks",
     subcategoryId: "hot-drinks",
     customizable: true,
     description: "Smooth and creamy vanilla flavored coffee",
@@ -142,6 +144,8 @@ const PRODUCTS: Product[] = [
 ]
 
 export default function Page() {
+  const isMobile = useIsMobile()
+
   const [activeCategory, setActiveCategory] = useState(CATEGORIES[0].id)
   const [activeSubcategory, setActiveSubcategory] = useState(CATEGORIES[0].subcategories[0].id)
   const [cart, setCart] = useState<CartItem[]>([])
@@ -169,7 +173,7 @@ export default function Page() {
       )
 
       if (existingItem) {
-        return prevCart.map((item) => 
+        return prevCart.map((item) =>
           item === existingItem ? { ...item, quantity: item.quantity + quantity } : item
         )
       }
@@ -180,7 +184,7 @@ export default function Page() {
 
   const updateCartItemQuantity = (index: number, quantity: number) => {
     setCart((prev) =>
-      prev.map((item, i) => (i === index ? { ...item, quantity } : item)).filter((item) => item.quantity > 0),
+      prev.map((item, i) => (i === index ? { ...item, quantity } : item)).filter((item) => item.quantity > 0)
     )
   }
 
@@ -208,77 +212,95 @@ export default function Page() {
         <h1 className="text-2xl font-bold tracking-tight" style={{ color: THEME.primary }}>
           Café POS
         </h1>
-        <Button
-          ref={cartButtonRef}
-          variant="outline" 
-          size="icon"
-          onClick={() => setIsCartOpen(true)}
-          className="h-10 w-10 rounded-full shadow-lg transition-transform hover:scale-110 relative"
-          style={{ borderColor: THEME.primary, color: THEME.primary, backgroundColor: THEME.background }}
-        >
-          <ShoppingCart className="h-5 w-5" />
-          <AnimatePresence>
-            {cart.length > 0 && (
-              <motion.span
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                exit={{ scale: 0 }}
-                className="absolute -top-2 -right-2 rounded-full w-5 h-5 text-xs flex items-center justify-center"
-                style={{ 
-                  backgroundColor: THEME.secondary, 
-                  color: THEME.background
-                }}
-              >
-                {cart.length}
-              </motion.span>
-            )}
-          </AnimatePresence>
-        </Button>
-      </header>
-      <div className="flex flex-col h-[calc(100vh-4rem)]">
-        <nav className="bg-background/80 backdrop-blur-sm sticky top-[4rem] z-40 py-2">
-          <CategoryBar
-            categories={CATEGORIES}
-            activeCategory={activeCategory}
-            onCategoryChange={(categoryId) => {
-              setActiveCategory(categoryId)
-              setActiveSubcategory(CATEGORIES.find((c) => c.id === categoryId)?.subcategories[0].id || "")
-            }}
-          />
-          <div className="mt-2">
-            <SubcategoryNav
-              subcategories={subcategories}
-              activeSubcategory={activeSubcategory}
-              onSubcategoryChange={handleSubcategoryChange}
-            />
-          </div>
-        </nav>
-
-        <main className="flex-1 overflow-auto p-4">
-          {isLoading && (
-            <div className="flex justify-center items-center h-64">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-            </div>
-          )}
-          {!isLoading && (
-            <ProductGrid
-              products={PRODUCTS.filter(
-                (p) => p.categoryId === activeCategory && p.subcategoryId === activeSubcategory,
+        {!isMobile && (
+          <span style={{ color: THEME.text }}>
+            {cart.length} items
+          </span>
+        )}
+        {isMobile && (
+          <Button
+            ref={cartButtonRef}
+            variant="outline"
+            size="icon"
+            onClick={() => setIsCartOpen(true)}
+            className="h-10 w-10 rounded-full shadow-lg transition-transform hover:scale-110 relative"
+            style={{ borderColor: THEME.primary, color: THEME.primary, backgroundColor: THEME.background }}
+          >
+            <ShoppingCart className="h-5 w-5" />
+            <AnimatePresence>
+              {cart.length > 0 && (
+                <motion.span
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  exit={{ scale: 0 }}
+                  className="absolute -top-2 -right-2 rounded-full w-5 h-5 text-xs flex items-center justify-center"
+                  style={{
+                    backgroundColor: THEME.secondary,
+                    color: THEME.background
+                  }}
+                >
+                  {cart.length}
+                </motion.span>
               )}
-              onAddToCart={addToCart}
-              cartRef={cartButtonRef}
+            </AnimatePresence>
+          </Button>
+        )}
+      </header>
+      <div className={`h-[calc(100vh-4rem)] ${isMobile ? "flex flex-col" : "grid grid-cols-[4fr_1fr]"}`}>
+        <div className="flex flex-col">
+          <nav className="bg-background/80 backdrop-blur-sm sticky top-[4rem] z-40 py-2">
+            <CategoryBar
+              categories={CATEGORIES}
+              activeCategory={activeCategory}
+              onCategoryChange={(categoryId) => {
+                setActiveCategory(categoryId)
+                setActiveSubcategory(CATEGORIES.find((c) => c.id === categoryId)?.subcategories[0].id || "")
+              }}
             />
-          )}
-        </main>
+            <div className="mt-2">
+              <SubcategoryNav
+                subcategories={subcategories}
+                activeSubcategory={activeSubcategory}
+                onSubcategoryChange={handleSubcategoryChange}
+              />
+            </div>
+          </nav>
+
+          <main className="flex-1 overflow-auto p-4">
+            {isLoading && (
+              <div className="flex justify-center items-center h-64">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+              </div>
+            )}
+            {!isLoading && (
+              <ProductGrid
+                products={PRODUCTS.filter(
+                  (p) => p.categoryId === activeCategory && p.subcategoryId === activeSubcategory
+                )}
+                onAddToCart={addToCart}
+                cartRef={cartButtonRef}
+              />
+            )}
+          </main>
+        </div>
+        {!isMobile && (
+          <CartSheet
+            cart={cart}
+            onUpdateQuantity={updateCartItemQuantity}
+            onRemoveItem={removeCartItem}
+          />
+        )}
       </div>
 
-      <CartSheet
-        cart={cart}
-        onUpdateQuantity={updateCartItemQuantity}
-        onRemoveItem={removeCartItem}
-        open={isCartOpen}
-        onOpenChange={setIsCartOpen}
-      />
+      {isMobile && (
+        <CartSheet
+          cart={cart}
+          onUpdateQuantity={updateCartItemQuantity}
+          onRemoveItem={removeCartItem}
+          open={isCartOpen}
+          onOpenChange={setIsCartOpen}
+        />
+      )}
     </div>
   )
 }
