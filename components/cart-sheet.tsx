@@ -96,7 +96,7 @@ export function CartSheet({ cart, onUpdateQuantity, onRemoveItem, open, onOpenCh
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, x: -100 }}
-                  className="relative"
+                  className="relative select-none"
                   style={{ borderColor: THEME.primary }}
                   data-index={index}
                   {...swipeHandlers}
