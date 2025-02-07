@@ -1,9 +1,9 @@
 export const CURRENCY = {
-  symbol: "$",
-  code: "USD",
+  symbol: "RM",
+  code: "MYR",
 }
 
-export const TAX_RATE = 0.12 // 12%
+export const TAX_RATE = 0.6 // 0.6%
 
 export const ORDER_STEPS = ["Items", "Payment", "Confirmation"]
 
