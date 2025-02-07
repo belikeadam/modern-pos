@@ -46,13 +46,22 @@ export function CategoryBar({ categories, activeCategory, onCategoryChange }: Ca
   return (
     <div className="relative flex items-center max-w-screen-xl mx-auto">
       {showLeftArrow && (
-        <Button variant="ghost" size="icon" className="absolute left-0 z-10" onClick={() => scroll("left")}>
-          <ChevronLeft className="h-4 w-4" />
-        </Button>
+        <div className="absolute left-0 z-10 flex items-center h-full">
+          <div className="absolute inset-y-0 left-0 w-12 bg-gradient-to-r from-background to-transparent" />
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="relative ml-2" 
+            onClick={() => scroll("left")}
+          >
+            <ChevronLeft className="h-4 w-4" />  
+          </Button>
+        </div>
       )}
+
       <div
         ref={scrollRef}
-        className="flex overflow-x-auto scrollbar-hide space-x-1 px-4"
+        className="flex overflow-x-auto scrollbar-hide space-x-1 px-12" // Added px-12 for safe space
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
         {categories.map((category) => {
@@ -74,12 +83,20 @@ export function CategoryBar({ categories, activeCategory, onCategoryChange }: Ca
           )
         })}
       </div>
+
       {showRightArrow && (
-        <Button variant="ghost" size="icon" className="absolute right-0 z-10" onClick={() => scroll("right")}>
-          <ChevronRight className="h-4 w-4" />
-        </Button>
+        <div className="absolute right-0 z-10 flex items-center h-full">
+          <div className="absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-background to-transparent" />
+          <Button 
+            variant="ghost" 
+            size="icon"
+            className="relative mr-2"
+            onClick={() => scroll("right")}
+          >
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        </div>
       )}
     </div>
   )
 }
-
