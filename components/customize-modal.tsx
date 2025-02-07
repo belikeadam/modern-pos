@@ -20,7 +20,7 @@ export function CustomizeModal({ product, onClose, onAddToCart }: CustomizeModal
   })
 
   const totalPrice = (
-    (product.price + CUSTOMIZATION_OPTIONS.size.find((s) => s.label === customizations.size)?.price || 0) * quantity
+    (product.price + (CUSTOMIZATION_OPTIONS.size.find((s) => s.label === customizations.size)?.price ?? 0)) * quantity
   ).toFixed(2)
 
   return (

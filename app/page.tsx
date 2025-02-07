@@ -5,7 +5,7 @@ import { ProductGrid } from "@/components/product-grid"
 import { CartSheet } from "@/components/cart-sheet"
 import { CategoryBar } from "@/components/category-bar"
 import { SubcategoryNav } from "@/components/subcategory-nav"
-import type { Category, CartItem, Product } from "@/types/product"
+import type { Category, CartItem, Product, ProductCustomizations } from "@/types/product"
 import { Button } from "@/components/ui/button"
 import {
   ShoppingCart,
