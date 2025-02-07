@@ -11,6 +11,7 @@ import { Separator } from "@/components/ui/separator"
 import { Collapsible } from "@/components/ui/collapsible"
 import { CURRENCY, TAX_RATE, ORDER_STEPS, THEME } from "@/constants/config"
 import { useSwipeable } from 'react-swipeable';
+import { QuantitySelector } from "@/components/quantity-selector"
 
 interface CartSheetProps {
   cart: CartItem[]
@@ -104,53 +105,28 @@ export function CartSheet({ cart, onUpdateQuantity, onRemoveItem, open, onOpenCh
               {...swipeHandlers}
             >
               <div 
-                className={`p-4 border-b ${swipedIndex === index ? 'translate-x-[-80px]' : ''} transition-transform duration-200 flex items-center justify-between`} 
+                className={`p-4 border-b ${swipedIndex === index ? 'translate-x-[-80px]' : ''} transition-transform duration-200`} 
                 style={{ borderColor: THEME.primary }}
               >
-                <div className="flex-1 min-w-0 mr-4">
-                  <h3 className="font-semibold text-lg truncate" style={{ color: THEME.text }}>
-                    {item.name}
-                  </h3>
-                  <p className="text-sm text-muted-foreground mt-1 truncate" style={{ color: THEME.text }}>
-                    {item.customizations?.size}, {item.customizations?.sugar}
-                  </p>
-                </div>
-                <div className="flex flex-col items-end gap-2">
-                  <p className="font-semibold text-lg" style={{ color: THEME.primary }}>
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-lg truncate" style={{ color: THEME.text }}>
+                      {item.name}
+                    </h3>
+                    <p className="text-sm text-muted-foreground mt-1 truncate" style={{ color: THEME.text }}>
+                      {item.customizations?.size}, {item.customizations?.sugar}
+                    </p>
+                  </div>
+                  <p className="font-semibold text-lg whitespace-nowrap" style={{ color: THEME.primary }}>
                     {CURRENCY.symbol}
                     {(item.price * item.quantity).toFixed(2)}
                   </p>
-                  <div className="flex items-center gap-1">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-7 w-7"
-                      onClick={() => handleQuantityChange(index, item.quantity - 1)}
-                      disabled={item.quantity <= 1}
-                    >
-                      <Minus className="h-3 w-3" />
-                    </Button>
-                    <Input
-                      type="number"
-                      className="w-12 text-center h-7 px-1"
-                      style={{ color: THEME.text }}
-                      value={item.quantity.toString()}
-                      onChange={(e) => {
-                        const value = parseInt(e.target.value);
-                        if (!isNaN(value)) {
-                          handleQuantityChange(index, value);
-                        }
-                      }}
-                    />
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-7 w-7"
-                      onClick={() => handleQuantityChange(index, item.quantity + 1)}
-                    >
-                      <Plus className="h-3 w-3" />
-                    </Button>
-                  </div>
+                </div>
+                <div className="mt-2 flex justify-end" onClick={(e) => e.stopPropagation()}>
+                  <QuantitySelector
+                    value={item.quantity}
+                    onChange={(value) => handleQuantityChange(index, value)}
+                  />
                 </div>
               </div>
               {swipedIndex === index && (
