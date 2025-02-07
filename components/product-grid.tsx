@@ -11,7 +11,7 @@ import { THEME } from "@/constants/config"
 
 interface ProductGridProps {
   products: Product[]
-  onAddToCart: (product: Product, quantity: number, customizations?: Record<string, string>) => void
+  onAddToCart: (product: Product, quantity: number, customizations?: { size: string; sugar: string }) => void
   cartRef: React.RefObject<HTMLButtonElement>
 }
 

@@ -128,17 +128,17 @@ const CATEGORIES: Category[] = [
 
 const PRODUCTS: Product[] = [
   {
-    id: "1",
+    id: "1",  
     name: "French Vanilla Fantasy",
     price: 5.99,
     icon: Coffee,
-    categoryId: "drinks",
+    categoryId: "drinks", 
     subcategoryId: "hot-drinks",
     customizable: true,
     description: "Smooth and creamy vanilla flavored coffee",
-    popular: true,
+    popular: true  // This is now valid
   },
-  // Add more products here...
+  // ...
 ]
 
 export default function Page() {
@@ -162,14 +162,16 @@ export default function Page() {
     localStorage.setItem("cart", JSON.stringify(cart))
   }, [cart])
 
-  const addToCart = (product: Product, quantity: number, customizations?: { size: string; sugar: string }) => {
+  const addToCart = (product: Product, quantity: number, customizations?: ProductCustomizations) => {
     setCart((prevCart) => {
       const existingItem = prevCart.find(
-        (item) => item.id === product.id && JSON.stringify(item.customizations) === JSON.stringify(customizations),
+        (item) => item.id === product.id && JSON.stringify(item.customizations) === JSON.stringify(customizations)
       )
 
       if (existingItem) {
-        return prevCart.map((item) => (item === existingItem ? { ...item, quantity: item.quantity + quantity } : item))
+        return prevCart.map((item) => 
+          item === existingItem ? { ...item, quantity: item.quantity + quantity } : item
+        )
       }
 
       return [...prevCart, { ...product, quantity, customizations }]
@@ -208,10 +210,10 @@ export default function Page() {
         </h1>
         <Button
           ref={cartButtonRef}
-          variant="outline"
+          variant="outline" 
           size="icon"
           onClick={() => setIsCartOpen(true)}
-          className="h-10 w-10 rounded-full shadow-lg transition-transform hover:scale-110"
+          className="h-10 w-10 rounded-full shadow-lg transition-transform hover:scale-110 relative"
           style={{ borderColor: THEME.primary, color: THEME.primary, backgroundColor: THEME.background }}
         >
           <ShoppingCart className="h-5 w-5" />
@@ -222,7 +224,10 @@ export default function Page() {
                 animate={{ scale: 1 }}
                 exit={{ scale: 0 }}
                 className="absolute -top-2 -right-2 rounded-full w-5 h-5 text-xs flex items-center justify-center"
-                style={{ backgroundColor: THEME.secondary, color: THEME.text }}
+                style={{ 
+                  backgroundColor: THEME.secondary, 
+                  color: THEME.background
+                }}
               >
                 {cart.length}
               </motion.span>
@@ -277,4 +282,3 @@ export default function Page() {
     </div>
   )
 }
-

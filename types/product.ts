@@ -12,16 +12,21 @@ export interface Subcategory {
   name: string
   parentId: string
 }
-
+export interface ProductCustomizations {
+  size: string
+  sugar: string
+}
 export interface Product {
   id: string
   name: string
   price: number
-  icon: string
+  icon: LucideIcon
   description?: string
   categoryId: string
   subcategoryId: string
   customizable: boolean
+  popular?: boolean  // Add this optional property
+
 }
 
 export interface CartItem extends Product {

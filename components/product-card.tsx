@@ -2,21 +2,21 @@
 
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import type { Product } from "@/types/product"
+import type { Product, ProductCustomizations } from "@/types/product"
 import { Card, CardContent } from "@/components/ui/card"
 import { CURRENCY, THEME } from "@/constants/config"
 import { CustomizeModal } from "./customize-modal"
 
 interface ProductCardProps {
   product: Product
-  onAdd: (quantity: number, customizations?: Record<string, string>) => void
+  onAdd: (quantity: number, customizations?: ProductCustomizations) => void
   cartPosition: { x: number; y: number } | null
 }
 
 export function ProductCard({ product, onAdd, cartPosition }: ProductCardProps) {
   const [showCustomizeModal, setShowCustomizeModal] = useState(false)
 
-  const handleAdd = async (quantity: number, customizations?: Record<string, string>) => {
+  const handleAdd = async (quantity: number, customizations?: ProductCustomizations) => {
     if (!cartPosition) return
 
     const card = document.getElementById(`product-${product.id}`)
@@ -35,7 +35,6 @@ export function ProductCard({ product, onAdd, cartPosition }: ProductCardProps) 
     document.body.appendChild(clone)
 
     await new Promise((resolve) => setTimeout(resolve, 50))
-
     clone.style.transform = `translate(${cartPosition.x - cardRect.left - cardRect.width / 2}px, ${
       cartPosition.y - cardRect.top - cardRect.height / 2
     }px) scale(0.2) rotate(720deg)`
@@ -64,29 +63,16 @@ export function ProductCard({ product, onAdd, cartPosition }: ProductCardProps) 
         >
           <CardContent className="p-4">
             <motion.div
-              className="flex flex-col items-center justify-center mb-2"
-              whileHover={{ rotate: [0, -10, 10, -10, 0] }}
-              transition={{ duration: 0.5 }}
+              className="flex items-center justify-between"
+              style={{ color: THEME.text }}
             >
-              <Icon className="w-10 h-10" style={{ color: THEME.primary }} />
-            </motion.div>
-            <div className="text-center space-y-1">
-              <h3 className="font-semibold text-base tracking-tight" style={{ color: THEME.text }}>
-                {product.name}
-              </h3>
-              <p className="text-xs text-gray-600" style={{ color: THEME.text }}>
-                {product.description}
-              </p>
-              <p className="text-lg font-bold" style={{ color: THEME.primary }}>
+              <Icon className="w-6 h-6" />
+              <span className="text-lg font-semibold">{product.name}</span>
+              <span className="text-lg font-semibold">
                 {CURRENCY.symbol}
                 {product.price.toFixed(2)}
-              </p>
-              {product.popular && (
-                <span className="inline-block bg-yellow-200 text-yellow-800 text-xs px-2 py-1 rounded-full">
-                  Popular
-                </span>
-              )}
-            </div>
+              </span>
+            </motion.div>
           </CardContent>
         </Card>
       </motion.div>
@@ -99,4 +85,3 @@ export function ProductCard({ product, onAdd, cartPosition }: ProductCardProps) 
     </>
   )
 }
-

@@ -1,7 +1,5 @@
-"use client"
-
 import { useState } from "react"
-import type { Product } from "@/types/product"
+import type { Product, ProductCustomizations } from "@/types/product"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
@@ -11,12 +9,12 @@ import { CUSTOMIZATION_OPTIONS, CURRENCY } from "@/constants/config"
 interface CustomizeModalProps {
   product: Product
   onClose: () => void
-  onAddToCart: (quantity: number, customizations: Record<string, string>) => void
+  onAddToCart: (quantity: number, customizations: ProductCustomizations) => void
 }
 
 export function CustomizeModal({ product, onClose, onAddToCart }: CustomizeModalProps) {
   const [quantity, setQuantity] = useState(1)
-  const [customizations, setCustomizations] = useState<Record<string, string>>({
+  const [customizations, setCustomizations] = useState<ProductCustomizations>({
     size: "Small",
     sugar: "Normal Sugar",
   })
@@ -90,17 +88,16 @@ export function CustomizeModal({ product, onClose, onAddToCart }: CustomizeModal
               +
             </Button>
           </div>
-        </div>
 
-        <div className="flex items-center justify-between mt-4">
-          <p className="text-lg font-bold">
-            Total: {CURRENCY.symbol}
-            {totalPrice}
-          </p>
-          <Button onClick={() => onAddToCart(quantity, customizations)}>Add to Cart</Button>
+          <div className="flex items-center justify-between mt-4">
+            <p className="text-lg font-bold">
+              Total: {CURRENCY.symbol}
+              {totalPrice}
+            </p>
+            <Button onClick={() => onAddToCart(quantity, customizations)}>Add to Cart</Button>
+          </div>
         </div>
       </DialogContent>
     </Dialog>
   )
 }
-
