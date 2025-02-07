@@ -50,38 +50,38 @@ export function ProductCard({ product, onAdd, cartPosition }: ProductCardProps) 
 
   return (
     <>
-      <motion.div
-        id={`product-${product.id}`}
-        whileHover={{ scale: 1.05, y: -5 }}
-        whileTap={{ scale: 0.95 }}
-        onClick={() => setShowCustomizeModal(true)}
-        className="cursor-pointer"
-      >
-        <Card
-          className="overflow-hidden shadow-lg hover:shadow-xl transition-shadow"
-          style={{ backgroundColor: THEME.background }}
+  <motion.div
+    id={`product-${product.id}`}
+    whileHover={{ scale: 1.05, y: -5 }}
+    whileTap={{ scale: 0.95 }}
+    onClick={() => setShowCustomizeModal(true)}
+    className="cursor-pointer"
+  >
+    <Card
+      className="overflow-hidden shadow-md hover:shadow-lg transition-shadow"
+      style={{ backgroundColor: THEME.background }}
+    >
+      <CardContent className="p-6">
+        <motion.div
+          className="flex flex-col items-start justify-between"
+          style={{ color: THEME.text }}
         >
-          <CardContent className="p-4">
-            <motion.div
-              className="flex items-center justify-between"
-              style={{ color: THEME.text }}
-            >
-              <Icon className="w-6 h-6" />
-              <span className="text-lg font-semibold">{product.name}</span>
-              <span className="text-lg font-semibold">
-                {CURRENCY.symbol}
-                {product.price.toFixed(2)}
-              </span>
-            </motion.div>
-          </CardContent>
-        </Card>
-      </motion.div>
+          <Icon className="w-8 h-8 mb-2" />
+          <span className="text-xl font-bold">{product.name}</span>
+          <span className="text-gray-500">
+            {CURRENCY.symbol}
+            {product.price.toFixed(2)}
+          </span>
+        </motion.div>
+      </CardContent>
+    </Card>
+  </motion.div>
 
-      <AnimatePresence>
-        {showCustomizeModal && (
-          <CustomizeModal product={product} onClose={() => setShowCustomizeModal(false)} onAddToCart={handleAdd} />
-        )}
-      </AnimatePresence>
-    </>
+  <AnimatePresence>
+    {showCustomizeModal && (
+      <CustomizeModal product={product} onClose={() => setShowCustomizeModal(false)} onAddToCart={handleAdd} />
+    )}
+  </AnimatePresence>
+</>
   )
 }
