@@ -5,6 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { CUSTOMIZATION_OPTIONS, CURRENCY } from "@/constants/config"
+import { QuantitySelector } from "@/components/quantity-selector"
 
 interface CustomizeModalProps {
   product: Product
@@ -79,14 +80,8 @@ export function CustomizeModal({ product, onClose, onAddToCart }: CustomizeModal
             </RadioGroup>
           </div>
 
-          <div className="flex items-center justify-center space-x-4">
-            <Button variant="outline" size="icon" onClick={() => setQuantity((q) => Math.max(1, q - 1))}>
-              -
-            </Button>
-            <span className="text-xl font-semibold w-8 text-center">{quantity}</span>
-            <Button variant="outline" size="icon" onClick={() => setQuantity((q) => q + 1)}>
-              +
-            </Button>
+          <div className="flex items-center justify-center">
+            <QuantitySelector value={quantity} onChange={setQuantity} />
           </div>
 
           <div className="flex items-center justify-between mt-4">
